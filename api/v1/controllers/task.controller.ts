@@ -102,7 +102,7 @@ export const changeMulti = async (req: Request, res:Response)=>{
             message: "Cập nhật trạng thái thành công",
           });
           break;
-        case "delete": 
+        case "delete": //Đã làm trước đó
           await Task.updateMany(
             {
               _id: { $in: ids },
