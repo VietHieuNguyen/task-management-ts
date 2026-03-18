@@ -147,6 +147,7 @@ export const create = async (req: Request, res:Response)=>{
       });
     }
 }
+
 export const edit = async (req: Request, res:Response)=>{
   try {
       const id = req.params.id;
@@ -167,4 +168,22 @@ export const edit = async (req: Request, res:Response)=>{
         message: "Không tồn tại",
       });
     }
+}
+
+export const deleteTask = async (req: Request, res:Response)=>{
+  try {
+    const id = req.params.id;
+    await Task.updateOne({
+      _id: id
+    },{
+      deleted: true
+    })
+    res.status(200).json({
+      message: "Đã xóa thành công"
+    })
+  } catch (error) {
+    res.status(500).json({
+      message: "Lỗi Server"
+    })
+  }
 }
