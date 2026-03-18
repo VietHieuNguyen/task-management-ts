@@ -87,10 +87,14 @@ export const changeStatus = async (req: Request, res: Response)=>{
 }
 export const changeMulti = async (req: Request, res:Response)=>{
   try {
+    enum Key{
+      STATUS ="status",
+      DELETE = "delete"
+    }
       const { ids, key, value } = req.body;
   
       switch (key) {
-        case "status":
+        case Key.STATUS:
           await Task.updateMany(
             {
               _id: { $in: ids },
@@ -102,7 +106,7 @@ export const changeMulti = async (req: Request, res:Response)=>{
             message: "Cập nhật trạng thái thành công",
           });
           break;
-        case "delete": //Đã làm trước đó
+        case Key.DELETE: //Đã làm trước đó
           await Task.updateMany(
             {
               _id: { $in: ids },
