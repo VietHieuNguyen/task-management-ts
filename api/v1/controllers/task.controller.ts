@@ -85,3 +85,48 @@ export const changeStatus = async (req: Request, res: Response)=>{
       });
     }
 }
+export const changeMulti = async (req: Request, res:Response)=>{
+  try {
+      const { ids, key, value } = req.body;
+  
+      switch (key) {
+        case "status":
+          await Task.updateMany(
+            {
+              _id: { $in: ids },
+            },
+            { status: value },
+          );
+          res.json({
+            code: 200,
+            message: "Cập nhật trạng thái thành công",
+          });
+          break;
+        case "delete": 
+          await Task.updateMany(
+            {
+              _id: { $in: ids },
+            },
+            { deleted: true,
+              deletedAt: new Date()
+             },
+          );
+          res.json({
+            code: 200,
+            message: "Xóa thành công",
+          });
+          break;
+        default:
+          res.json({
+            code: 400,
+            message: "Không tồn tại",
+          });
+          break;
+      }
+    } catch {
+      res.json({
+        code: 400,
+        message: "Không tồn tại",
+      });
+    }
+}
