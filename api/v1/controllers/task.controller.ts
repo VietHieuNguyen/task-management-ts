@@ -1,10 +1,12 @@
 import paginationHelper from "../../../helpers/pagination"
+import searchHelper from "../../../helpers/search"
 import Task from "../models/task.model"
 import { Request, Response } from "express"
 export const index = async (req: Request, res: Response) => {
   interface Find {
     deleted: boolean,
-    status?: string
+    status?: string,
+    title?: RegExp
   }
 
   let find: Find = {
@@ -14,7 +16,13 @@ export const index = async (req: Request, res: Response) => {
   if (req.query.status) {
     find.status = req.query.status.toString()
   }
+  //Search
+  let objectSearch = searchHelper(req.query);
 
+  if (req.query.keyword) {
+    find.title = objectSearch.regex;
+  }
+  //End Search
   //Sort
   const sort: Record<string, any> = {}; // Đổi dòng này  
   if (req.query.sortKey && req.query.sortValue) {
