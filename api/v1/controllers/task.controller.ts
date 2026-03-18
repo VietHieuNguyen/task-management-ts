@@ -60,3 +60,28 @@ export const detail = async (req: Request, res: Response) => {
   })
 
 }
+
+export const changeStatus = async (req: Request, res: Response)=>{
+  
+  try {
+  const id = req.params.id as string;  
+      const status = req.body.status;
+      await Task.updateOne(
+        {
+          _id: id,
+        },
+        {
+          status: status,
+        },
+      );
+      res.json({
+        code: 200,
+        message: "Cập nhật trạng thái thành công",
+      });
+    } catch {
+      res.json({
+        code: 400,
+        message: "Không tồn tại",
+      });
+    }
+}
