@@ -1,33 +1,41 @@
+import paginationHelper from "../../../helpers/pagination"
 import Task from "../models/task.model"
 import { Request, Response } from "express"
 export const index = async (req: Request, res: Response) => {
   interface Find {
     deleted: boolean,
-    status?:string
+    status?: string
   }
 
-
-  let find: Find ={
-    deleted:false
+  let find: Find = {
+    deleted: false
   }
 
-  if(req.query.status){
+  if (req.query.status) {
     find.status = req.query.status.toString()
   }
 
   //Sort
-const sort: Record<string, any> = {}; // Đổi dòng này  
-  if(req.query.sortKey && req.query.sortValue){
+  const sort: Record<string, any> = {}; // Đổi dòng này  
+  if (req.query.sortKey && req.query.sortValue) {
     const sortKey = req.query.sortKey.toString()
     sort[sortKey] = req.query.sortValue.toString();
   }
-  
 
- 
-  const tasks = await Task.find(find).sort(sort)
-  if(!tasks){
 
-  }
+  //Pagination
+  const initPagination = {
+    currentPage: 1,
+    limitItems: 2,
+  };
+  const countTasks = await Task.countDocuments(find);
+  const objectPagination = paginationHelper(
+    initPagination,
+    req.query,
+    countTasks,
+  );
+  const tasks = await Task.find(find).sort(sort).limit(objectPagination.limitItems).skip(objectPagination.skip)
+
   res.json({
     tasks: tasks
   })
