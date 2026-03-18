@@ -4,7 +4,7 @@ dotenv.config()
 
 import express, {Express} from "express"
 import * as database from "./config/database"
-import Task from "./models/task.model"
+import Task from "./api/v1/models/task.model"
 import mainV1Routes from "./api/v1/routes/index.route"
 const app: Express = express()
 
