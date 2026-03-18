@@ -5,17 +5,26 @@ export const index = async (req: Request, res: Response) => {
     deleted: boolean,
     status?:string
   }
+
+
   let find: Find ={
     deleted:false
   }
+
   if(req.query.status){
     find.status = req.query.status.toString()
   }
-  const status = req.query.status;
-  const tasks = await Task.find({
-    status: status,
-    deleted: false
-  })
+
+  //Sort
+const sort: Record<string, any> = {}; // Đổi dòng này  
+  if(req.query.sortKey && req.query.sortValue){
+    const sortKey = req.query.sortKey.toString()
+    sort[sortKey] = req.query.sortValue.toString();
+  }
+  
+
+ 
+  const tasks = await Task.find(find).sort(sort)
   if(!tasks){
 
   }
@@ -25,8 +34,7 @@ export const index = async (req: Request, res: Response) => {
 
 }
 export const detail = async (req: Request, res: Response) => {
-  const id: string = req.params.id;
-
+  const id = req.params.id as string;
   const tasks = await Task.findOne({
     deleted: false,
     _id: id
