@@ -2,6 +2,7 @@ import { Request, Response } from "express"
 import bcrypt from "bcrypt"
 import User from "../models/user.model";
 import { generateRandomString } from "../../../helpers/generate";
+import { CustomRequest } from "../types/express";
 const saltRounds = 10;
 export const register = async (req: Request, res: Response) => {
   interface IUserbody {
@@ -64,16 +65,11 @@ export const login = async (req: Request, res: Response) => {
     token: token
   })
 }
-export const detail = async (req: Request, res: Response) => {
-  const id = req.params.id as string;
-  const user = await User.findOne({
-    _id: id,
-    deleted: false
-  }).select("-password -token")
-  
+export const detail = async (req: CustomRequest, res: Response) => {
+
   res.status(200).json({
       message: "Thành công",
-      infoUser: user
+      infoUser: req.user
     })
 
 }
