@@ -1,25 +1,25 @@
-import { Request,Response } from "express"
+import { Request, Response } from "express"
 import bcrypt from "bcrypt"
 import User from "../models/user.model";
 import { generateRandomString } from "../../../helpers/generate";
 const saltRounds = 10;
-export const register =async (req: Request, res: Response)=>{
-  interface IUserbody{
+export const register = async (req: Request, res: Response) => {
+  interface IUserbody {
     fullName: string,
     email: string,
     password: string
   }
-  let {fullName, email, password} = req.body as IUserbody
+  let { fullName, email, password } = req.body as IUserbody
   const emailExist = await User.findOne({
     email: email
   })
-  if(emailExist){
+  if (emailExist) {
     return res.status(400).json({
       message: "Email đã tồn tại"
     })
-  }else{
-    const hashedPassword = await  bcrypt.hash(password,saltRounds)
-    const token  = generateRandomString(20)
+  } else {
+    const hashedPassword = await bcrypt.hash(password, saltRounds)
+    const token = generateRandomString(20)
     const data = {
       fullName,
       email,
@@ -35,32 +35,45 @@ export const register =async (req: Request, res: Response)=>{
 
 }
 
-export const login =async (req: Request, res: Response)=>{
-  interface ILogin{
+export const login = async (req: Request, res: Response) => {
+  interface ILogin {
     email: string,
     password: string
   }
-  const {email, password} = req.body as ILogin
+  const { email, password } = req.body as ILogin
 
   const user = await User.findOne({
     email: email,
     deleted: false
   })
-  if(!user){
+  if (!user) {
     return res.status(400).json({
       message: "Email không tồn tại"
     })
   }
   const isMatch = await bcrypt.compare(password, user.password!)
-  if(!isMatch){
+  if (!isMatch) {
     return res.status(400).json({
       message: "Sai mật khẩu"
     })
-    
+
   }
   const token = user.token
   res.status(200).json({
-      message: "Đăng nhập thành công",
-      token: token
+    message: "Đăng nhập thành công",
+    token: token
+  })
+}
+export const detail = async (req: Request, res: Response) => {
+  const id = req.params.id as string;
+  const user = await User.findOne({
+    _id: id,
+    deleted: false
+  }).select("-password -token")
+  
+  res.status(200).json({
+      message: "Thành công",
+      infoUser: user
     })
+
 }
