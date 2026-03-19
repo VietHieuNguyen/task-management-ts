@@ -34,3 +34,33 @@ export const register =async (req: Request, res: Response)=>{
   }
 
 }
+
+export const login =async (req: Request, res: Response)=>{
+  interface ILogin{
+    email: string,
+    password: string
+  }
+  const {email, password} = req.body as ILogin
+
+  const user = await User.findOne({
+    email: email,
+    deleted: false
+  })
+  if(!user){
+    return res.status(400).json({
+      message: "Email không tồn tại"
+    })
+  }
+  const isMatch = await bcrypt.compare(password, user.password!)
+  if(!isMatch){
+    return res.status(400).json({
+      message: "Sai mật khẩu"
+    })
+    
+  }
+  const token = user.token
+  res.status(200).json({
+      message: "Đăng nhập thành công",
+      token: token
+    })
+}
