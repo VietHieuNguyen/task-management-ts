@@ -1,5 +1,5 @@
 import { Request, Response } from "express"
-import bcrypt from "bcrypt"
+import* as bcrypt from "bcrypt"
 import User from "../models/user.model";
 import { generateRandomString } from "../../../helpers/generate";
 import { CustomRequest } from "../types/express";

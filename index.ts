@@ -14,7 +14,7 @@ const port: number | string = process.env.PORT || 3000 ;
 // const corsOptions = {
 //   origin: '',
 //   optionSuccessStatus: 200
-// }
+// }//Husky
 
 app.use(cors())
 app.use(express.json())
